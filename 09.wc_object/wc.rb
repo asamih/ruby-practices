@@ -8,9 +8,9 @@ module WC
 
     def initialize
       @options = {}
-      opt = OptionParser.new
-      opt.on('-l', '--lines') { |v| @options[:l] = v }
-      opt.parse!(ARGV)
+      option = OptionParser.new
+      option.on('-l', '--lines') { |value| @options[:l] = value }
+      option.parse!(ARGV)
       @files = ARGV
     end
 
@@ -25,25 +25,25 @@ module WC
 
   class File < Command
     def data
-      fdata = []
+      file_data = []
       if files.empty?
-        funit = $stdin.read
-        fdata.push count(funit)
+        file_unit = $stdin.read
+        file_data.push count(file_unit)
       else
-        files.each do |fname|
-          ::File.open(fname, 'r') { |f| funit = f.read }
-          fdata.push(count(funit) << fname)
+        files.each do |file_name|
+          ::File.open(file_name, 'r') { |file| file_unit = file.read }
+          file_data.push(count(file_unit) << file_name)
         end
       end
-      fdata
+      file_data
     end
 
     private
 
-    def count(funit)
-      @line = funit.lines.count,
-              @word = funit.chomp.split.count,
-              @byte = funit.bytesize
+    def count(file_unit)
+      @line = file_unit.lines.count,
+              @word = file_unit.chomp.split.count,
+              @byte = file_unit.bytesize
     end
   end
 
@@ -57,13 +57,13 @@ module WC
     def normal(files)
       result = []
       if files.length >= 4
-        n = 0
-        files.each do |fname|
-          n += 1
-          result << (n % 4 != 0 ? rayout(fname) : " #{fname}\n")
+        number = 0
+        files.each do |file_name|
+          number += 1
+          result << (number % 4 != 0 ? rayout(file_name) : " #{file_name}\n")
         end
       else
-        files.map { |fname| result << rayout(fname) }
+        files.map { |file_name| result << rayout(file_name) }
       end
       puts result.join('')
       puts "#{total(file.data)} total" if files.length > 4
@@ -72,11 +72,11 @@ module WC
     def line(files)
       result = []
       if files.length >= 4
-        n = 0
-        files.each do |fname|
-          n += 1
-          result << rayout(fname) if n == 1 || ((n - 1) % 4).zero?
-          result << " #{fname}\n" if (n % 4).zero?
+        number = 0
+        files.each do |file_name|
+          number += 1
+          result << rayout(file_name) if number == 1 || ((number - 1) % 4).zero?
+          result << " #{file_name}\n" if (number % 4).zero?
         end
       else
         result << rayout(files.first)
@@ -87,17 +87,17 @@ module WC
 
     private
 
-    def rayout(fname)
-      fname.to_s.rjust(8, ' ')
+    def rayout(file_name)
+      file_name.to_s.rjust(8, ' ')
     end
 
     def total(files)
-      total = files.map { |a| a[0..2] }.transpose.map { |i| i.inject(:+) }
-      total.map { |t| rayout(t) }.join('')
+      total = files.map { |array| array[0..2] }.transpose.map { |file_data| file_data.inject(:+) }
+      total.map { |file_total| rayout(file_total) }.join('')
     end
 
     def total_line(files)
-      rayout(files.map { |i| i[0] }.sum)
+      rayout(files.map { |file_data| file_data[0] }.sum)
     end
   end
 end
