@@ -62,11 +62,11 @@ module LS
     def initialize
       super
       @options = {}
-      opt = OptionParser.new
-      opt.on('-a', '--all') { |v| @options[:a] = v }
-      opt.on('-l', '--long') { |v| @options[:l] = v }
-      opt.on('-r', '--reverse') { |v| @options[:r] = v }
-      opt.parse(ARGV)
+      option = OptionParser.new
+      option.on('-a', '--all') { |value| @options[:a] = value }
+      option.on('-l', '--long') { |value| @options[:l] = value }
+      option.on('-r', '--reverse') { |value| @options[:r] = value }
+      option.parse(ARGV)
     end
 
     def select_option
