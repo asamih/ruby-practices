@@ -81,13 +81,13 @@ module Ls
       if options[:l]
         Ls::VerticalFormatter.new.output_single_column(@files)
       else
-        Ls::HorizontalFormatter.new.multi_column(@files)
+        Ls::HorizontalFormatter.new.output_multi_column(@files)
       end
     end
   end
 
   class HorizontalFormatter
-    def multi_column(files)
+    def output_multi_column(files)
       result = []
       files.map { |file_name| result << file_name.to_s.ljust(24, ' ') }
       format = result.each_slice(length(files)).to_a
