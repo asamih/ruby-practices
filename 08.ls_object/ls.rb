@@ -44,7 +44,7 @@ module Ls
         file_stat = ::File::Stat.new(file_name)
         max_length << file_stat.nlink
       end
-      max_length.max_by { |num| num.to_s.length }.to_s.length
+      max_length.max_by { |number| number.to_s.length }.to_s.length
     end
 
     def permission_convert(file_stat)
