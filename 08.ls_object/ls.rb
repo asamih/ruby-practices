@@ -3,7 +3,7 @@
 require 'optparse'
 require 'etc'
 
-module LS
+module Ls
   class File
     attr_reader :files
 
