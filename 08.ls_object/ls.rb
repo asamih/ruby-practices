@@ -113,11 +113,11 @@ module Ls
         file_stat = ::File::Stat.new(file_name)
         total += file_stat.blocks
       end
-      puts "total #{total}"
+      "total #{total}"
     end
 
     def single_column(files)
-      total(files)
+      puts total(files)
       file_data = Ls::Command.new.data(files)
       file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
     end
