@@ -69,7 +69,7 @@ module Ls
       option.parse(ARGV)
     end
 
-    def select_option
+    def excute
       if options[:a]
         @files = all(files)
       else
@@ -124,4 +124,4 @@ module Ls
   end
 end
 
-Ls::Command.new.select_option
+Ls::Command.new.excute
