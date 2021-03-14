@@ -79,7 +79,7 @@ module Ls
       @files = reverse(files) if options[:r]
 
       if options[:l]
-        Ls::VerticalFormatter.new.single_column(@files)
+        Ls::VerticalFormatter.new.output_single_column(@files)
       else
         Ls::HorizontalFormatter.new.multi_column(@files)
       end
@@ -116,7 +116,7 @@ module Ls
       "total #{total}"
     end
 
-    def single_column(files)
+    def output_single_column(files)
       puts total(files)
       file_data = Ls::Command.new.data(files)
       file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
