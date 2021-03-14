@@ -79,9 +79,9 @@ module Ls
       @files = reverse(files) if options[:r] == true
 
       if options[:l] == true
-        LS::VerticalFormatter.new.single_column(@files)
+        Ls::VerticalFormatter.new.single_column(@files)
       else
-        LS::HorizontalFormatter.new.multi_column(@files)
+        Ls::HorizontalFormatter.new.multi_column(@files)
       end
     end
   end
@@ -118,10 +118,10 @@ module Ls
 
     def single_column(files)
       total(files)
-      file_data = LS::Command.new.data(files)
+      file_data = Ls::Command.new.data(files)
       file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
     end
   end
 end
 
-LS::Command.new.select_option
+Ls::Command.new.select_option
