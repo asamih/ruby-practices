@@ -70,15 +70,15 @@ module Ls
     end
 
     def select_option
-      if options[:a] == true
+      if options[:a]
         @files = all(files)
       else
         @files
       end
 
-      @files = reverse(files) if options[:r] == true
+      @files = reverse(files) if options[:r]
 
-      if options[:l] == true
+      if options[:l]
         Ls::VerticalFormatter.new.single_column(@files)
       else
         Ls::HorizontalFormatter.new.multi_column(@files)
