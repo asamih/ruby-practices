@@ -26,10 +26,9 @@ module Ls
     end
 
     def file_details(files)
-      file_data = []
-      files.each do |file_name|
+      files.map do |file_name|
         file_stat = ::File::Stat.new(file_name)
-        file_data.push [
+        [
           permission_convert(file_stat),
           file_stat.nlink.to_s.rjust(nlink_length(files)),
           Etc.getpwuid(file_stat.uid).name,
@@ -39,7 +38,6 @@ module Ls
           file_name
         ]
       end
-      file_data
     end
 
     def excute
