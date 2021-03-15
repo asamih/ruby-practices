@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-module WC
+module Wc
   class Command
     attr_reader :options, :files
 
@@ -16,9 +16,9 @@ module WC
 
     def option_select
       if options[:l] == true
-        WC::Formatter.new.line(WC::File.new.data.flatten!)
+        Wc::Formatter.new.line(Wc::File.new.data.flatten!)
       else
-        WC::Formatter.new.normal(WC::File.new.data.flatten!)
+        Wc::Formatter.new.normal(Wc::File.new.data.flatten!)
       end
     end
   end
@@ -51,7 +51,7 @@ module WC
     attr_reader :file
 
     def initialize
-      @file = WC::File.new
+      @file = Wc::File.new
     end
 
     def normal(files)
@@ -102,4 +102,4 @@ module WC
   end
 end
 
-WC::Command.new.option_select
+Wc::Command.new.option_select
