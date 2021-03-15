@@ -14,7 +14,7 @@ module Wc
       @files = ARGV
     end
 
-    def data
+    def file_data
       file_data = []
       if @files.empty?
         file_unit = $stdin.read
@@ -30,9 +30,9 @@ module Wc
 
     def excute
       if options[:l]
-        Wc::Formatter.new.output_line(Wc::Command.new.data.flatten!)
+        Wc::Formatter.new.output_line(file_data.flatten!)
       else
-        Wc::Formatter.new.output_normal(Wc::Command.new.data.flatten!)
+        Wc::Formatter.new.output_normal(file_data.flatten!)
       end
     end
 
