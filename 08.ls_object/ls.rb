@@ -5,7 +5,7 @@ require 'etc'
 
 module Ls
   class Command
-    attr_reader :options
+    attr_reader :options, :files
 
     def initialize
       @options = {}
@@ -14,18 +14,15 @@ module Ls
       option.on('-l', '--long') { |value| @options[:l] = value }
       option.on('-r', '--reverse') { |value| @options[:r] = value }
       option.parse(ARGV)
+      @files = Dir.glob('*').sort
     end
 
-    def files
-      Dir.glob('*').sort
+    def all_files
+      Dir.glob('.*').sort + @files
     end
 
-    def all(files)
-      Dir.glob('.*').sort + files
-    end
-
-    def reverse(files)
-      files.reverse
+    def reverse_files
+      @files.reverse
     end
 
     def data(files)
@@ -46,8 +43,8 @@ module Ls
     end
 
     def excute
-      @files = (options[:a] ? all(files) : files)
-      @files = reverse(@files) if options[:r]
+      @files = all_files if options[:a]
+      @files = reverse_files if options[:r]
       if options[:l]
         Ls::VerticalFormatter.new.output_single_column(@files)
       else
