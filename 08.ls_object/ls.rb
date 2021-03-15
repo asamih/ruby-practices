@@ -25,21 +25,6 @@ module Ls
       @files.reverse
     end
 
-    def file_details(files)
-      files.map do |file_name|
-        file_stat = ::File::Stat.new(file_name)
-        [
-          permission_convert(file_stat),
-          file_stat.nlink.to_s.rjust(nlink_length(files)),
-          Etc.getpwuid(file_stat.uid).name,
-          Etc.getgrgid(file_stat.gid).name.rjust(6),
-          file_stat.size.to_s.rjust(5),
-          file_stat.mtime.strftime('%_m %e %H:%M'),
-          file_name
-        ]
-      end
-    end
-
     def excute
       @files = all_files if options[:a]
       @files = reverse_files if options[:r]
@@ -48,24 +33,6 @@ module Ls
       else
         Ls::HorizontalFormatter.new.output_multi_column(@files)
       end
-    end
-
-    private
-
-    def nlink_length(files)
-      max_length = files.map do |file_name|
-        file_stat = ::File::Stat.new(file_name)
-        file_stat.nlink
-      end
-      max_length.max_by { |number| number.to_s.length }.to_s.length
-    end
-
-    def permission_convert(file_stat)
-      type = file_stat.ftype == 'file' ? '-' : file_stat.ftype[0]
-      rwx = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',
-              '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }
-      mode = file_stat.mode.to_s(8)[-3, 3].gsub(/\d/, rwx)
-      "#{type}#{mode} "
     end
   end
 
@@ -98,8 +65,39 @@ module Ls
 
     def output_single_column(files)
       puts "total #{total(files)}"
-      file_data = Ls::Command.new.file_details(files)
+      file_data = file_details(files)
       file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
+    end
+
+    def file_details(files)
+      files.map do |file_name|
+        file_stat = ::File::Stat.new(file_name)
+        [
+          permission_convert(file_stat),
+          file_stat.nlink.to_s.rjust(nlink_length(files)),
+          Etc.getpwuid(file_stat.uid).name,
+          Etc.getgrgid(file_stat.gid).name.rjust(6),
+          file_stat.size.to_s.rjust(5),
+          file_stat.mtime.strftime('%_m %e %H:%M'),
+          file_name
+        ]
+      end
+    end
+
+    def nlink_length(files)
+      max_length = files.map do |file_name|
+        file_stat = ::File::Stat.new(file_name)
+        file_stat.nlink
+      end
+      max_length.max_by { |number| number.to_s.length }.to_s.length
+    end
+
+    def permission_convert(file_stat)
+      type = file_stat.ftype == 'file' ? '-' : file_stat.ftype[0]
+      rwx = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',
+              '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }
+      mode = file_stat.mode.to_s(8)[-3, 3].gsub(/\d/, rwx)
+      "#{type}#{mode} "
     end
   end
 end
