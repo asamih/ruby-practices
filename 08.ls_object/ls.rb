@@ -4,11 +4,20 @@ require 'optparse'
 require 'etc'
 
 module Ls
-  class File
-    attr_reader :files
+  class Command
+    attr_reader :options
 
     def initialize
-      @files = Dir.glob('*').sort
+      @options = {}
+      option = OptionParser.new
+      option.on('-a', '--all') { |value| @options[:a] = value }
+      option.on('-l', '--long') { |value| @options[:l] = value }
+      option.on('-r', '--reverse') { |value| @options[:r] = value }
+      option.parse(ARGV)
+    end
+
+    def files
+      Dir.glob('*').sort
     end
 
     def all(files)
@@ -36,6 +45,16 @@ module Ls
       file_data
     end
 
+    def excute
+      @files = (options[:a] ? all(files) : files)
+      @files = reverse(@files) if options[:r]
+      if options[:l]
+        Ls::VerticalFormatter.new.output_single_column(@files)
+      else
+        Ls::HorizontalFormatter.new.output_multi_column(@files)
+      end
+    end
+
     private
 
     def nlink_length(files)
@@ -53,36 +72,6 @@ module Ls
               '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }
       mode = file_stat.mode.to_s(8)[-3, 3].gsub(/\d/, rwx)
       "#{type}#{mode} "
-    end
-  end
-
-  class Command < File
-    attr_reader :options, :files
-
-    def initialize
-      super
-      @options = {}
-      option = OptionParser.new
-      option.on('-a', '--all') { |value| @options[:a] = value }
-      option.on('-l', '--long') { |value| @options[:l] = value }
-      option.on('-r', '--reverse') { |value| @options[:r] = value }
-      option.parse(ARGV)
-    end
-
-    def excute
-      if options[:a]
-        @files = all(files)
-      else
-        @files
-      end
-
-      @files = reverse(files) if options[:r]
-
-      if options[:l]
-        Ls::VerticalFormatter.new.output_single_column(@files)
-      else
-        Ls::HorizontalFormatter.new.output_multi_column(@files)
-      end
     end
   end
 
