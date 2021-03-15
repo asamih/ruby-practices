@@ -4,26 +4,19 @@ require 'optparse'
 
 module Wc
   class Command
-    attr_reader :options, :files
+    attr_reader :options
 
     def initialize
       @options = {}
       option = OptionParser.new
       option.on('-l', '--lines') { |value| @options[:l] = value }
       option.parse!(ARGV)
-      @files = ARGV
     end
 
-    def excute
-      if options[:l]
-        Wc::Formatter.new.output_line(Wc::File.new.data.flatten!)
-      else
-        Wc::Formatter.new.output_normal(Wc::File.new.data.flatten!)
-      end
+    def files
+      ARGV
     end
-  end
 
-  class File < Command
     def data
       file_data = []
       if files.empty?
@@ -36,6 +29,14 @@ module Wc
         end
       end
       file_data
+    end
+
+    def excute
+      if options[:l]
+        Wc::Formatter.new.output_line(Wc::Command.new.data.flatten!)
+      else
+        Wc::Formatter.new.output_normal(Wc::Command.new.data.flatten!)
+      end
     end
 
     private
@@ -51,7 +52,7 @@ module Wc
     attr_reader :file
 
     def initialize
-      @file = Wc::File.new
+      @file = Wc::Command.new
     end
 
     def output_normal(files)
