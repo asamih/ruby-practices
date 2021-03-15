@@ -15,7 +15,7 @@ module Wc
     end
 
     def option_select
-      if options[:l] == true
+      if options[:l]
         Wc::Formatter.new.line(Wc::File.new.data.flatten!)
       else
         Wc::Formatter.new.normal(Wc::File.new.data.flatten!)
