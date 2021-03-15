@@ -53,10 +53,9 @@ module Ls
     private
 
     def nlink_length(files)
-      max_length = []
-      files.each do |file_name|
+      max_length = files.map do |file_name|
         file_stat = ::File::Stat.new(file_name)
-        max_length << file_stat.nlink
+        file_stat.nlink
       end
       max_length.max_by { |number| number.to_s.length }.to_s.length
     end
