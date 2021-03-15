@@ -18,7 +18,7 @@ module Wc
       if options[:l]
         Wc::Formatter.new.line(Wc::File.new.data.flatten!)
       else
-        Wc::Formatter.new.normal(Wc::File.new.data.flatten!)
+        Wc::Formatter.new.output_normal(Wc::File.new.data.flatten!)
       end
     end
   end
@@ -54,7 +54,7 @@ module Wc
       @file = Wc::File.new
     end
 
-    def normal(files)
+    def output_normal(files)
       results = []
       if files.length >= 4
         number = 0
