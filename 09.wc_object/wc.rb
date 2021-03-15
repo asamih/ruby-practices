@@ -16,7 +16,7 @@ module Wc
 
     def excute
       if options[:l]
-        Wc::Formatter.new.line(Wc::File.new.data.flatten!)
+        Wc::Formatter.new.output_line(Wc::File.new.data.flatten!)
       else
         Wc::Formatter.new.output_normal(Wc::File.new.data.flatten!)
       end
@@ -69,7 +69,7 @@ module Wc
       puts "#{total(file.data)} total" if files.length > 4
     end
 
-    def line(files)
+    def output_line(files)
       results = []
       if files.length >= 4
         number = 0
