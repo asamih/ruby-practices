@@ -11,19 +11,16 @@ module Wc
       option = OptionParser.new
       option.on('-l', '--lines') { |value| @options[:l] = value }
       option.parse!(ARGV)
-    end
-
-    def files
-      ARGV
+      @files = ARGV
     end
 
     def data
       file_data = []
-      if files.empty?
+      if @files.empty?
         file_unit = $stdin.read
         file_data.push count(file_unit)
       else
-        files.each do |file_name|
+        @files.each do |file_name|
           ::File.open(file_name, 'r') { |file| file_unit = file.read }
           file_data.push(count(file_unit) << file_name)
         end
