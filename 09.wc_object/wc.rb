@@ -14,7 +14,7 @@ module Wc
       @files = ARGV
     end
 
-    def option_select
+    def excute
       if options[:l]
         Wc::Formatter.new.line(Wc::File.new.data.flatten!)
       else
@@ -102,4 +102,4 @@ module Wc
   end
 end
 
-Wc::Command.new.option_select
+Wc::Command.new.excute
