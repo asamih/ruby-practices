@@ -65,8 +65,7 @@ module Ls
 
     def output_single_column(files)
       puts "total #{total(files)}"
-      file_data = file_details(files)
-      file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
+      file_details(files).each { |array| puts array.each_slice(7).to_a.join(' ') }
     end
 
     def file_details(files)
