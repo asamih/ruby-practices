@@ -29,7 +29,7 @@ module Ls
       @files = all_files if options[:a]
       @files = reverse_files if options[:r]
       if options[:l]
-        Ls::VerticalFormatter.new.output_single_column(@files)
+        Ls::VerticalFormatter.output_single_column(@files)
       else
         Ls::HorizontalFormatter.new.output_multi_column(@files)
       end
@@ -56,19 +56,19 @@ module Ls
   end
 
   class VerticalFormatter
-    def total(files)
+    def self.output_single_column(files)
+      puts "total #{total(files)}"
+      file_details(files).each { |array| puts array.each_slice(7).to_a.join(' ') }
+    end
+
+    def self.total(files)
       files.sum do |file_name|
         file_stat = ::File::Stat.new(file_name)
         file_stat.blocks
       end
     end
 
-    def output_single_column(files)
-      puts "total #{total(files)}"
-      file_details(files).each { |array| puts array.each_slice(7).to_a.join(' ') }
-    end
-
-    def file_details(files)
+    def self.file_details(files)
       files.map do |file_name|
         file_stat = ::File::Stat.new(file_name)
         [
@@ -83,7 +83,7 @@ module Ls
       end
     end
 
-    def nlink_length(files)
+    def self.nlink_length(files)
       max_length = files.map do |file_name|
         file_stat = ::File::Stat.new(file_name)
         file_stat.nlink
@@ -91,7 +91,7 @@ module Ls
       max_length.max_by { |number| number.to_s.length }.to_s.length
     end
 
-    def permission_convert(file_stat)
+    def self.permission_convert(file_stat)
       type = file_stat.ftype == 'file' ? '-' : file_stat.ftype[0]
       rwx = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',
               '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx' }
