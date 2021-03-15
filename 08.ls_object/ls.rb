@@ -88,9 +88,9 @@ module Ls
 
   class HorizontalFormatter
     def output_multi_column(files)
-      result = []
-      files.map { |file_name| result << file_name.to_s.ljust(24, ' ') }
-      format = result.each_slice(length(files)).to_a
+      results = []
+      files.map { |file_name| results << file_name.to_s.ljust(24, ' ') }
+      format = results.each_slice(length(files)).to_a
       push_nil(format).transpose.each { |array| puts array.join('') }
     end
 
