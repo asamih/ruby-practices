@@ -94,16 +94,14 @@ module Ls
 
   class VerticalFormatter
     def total(files)
-      total = 0
-      files.each do |file_name|
+      files.sum do |file_name|
         file_stat = ::File::Stat.new(file_name)
-        total += file_stat.blocks
+        file_stat.blocks
       end
-      "total #{total}"
     end
 
     def output_single_column(files)
-      puts total(files)
+      puts "total #{total(files)}"
       file_data = Ls::Command.new.data(files)
       file_data.map { |array| puts array.each_slice(7).to_a.join(' ') }
     end
