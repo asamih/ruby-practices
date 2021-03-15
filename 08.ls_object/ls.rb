@@ -31,27 +31,29 @@ module Ls
       if options[:l]
         Ls::VerticalFormatter.output_single_column(@files)
       else
-        Ls::HorizontalFormatter.new.output_multi_column(@files)
+        Ls::HorizontalFormatter.output_multi_column(@files)
       end
     end
   end
 
   class HorizontalFormatter
-    def output_multi_column(files)
-      results = files.map { |file| file.to_s.ljust(24, ' ') }
-      file_names = results.each_slice(length(files)).to_a
-      push_nil(file_names).transpose.each { |array| puts array.join('') }
-    end
+    class << self
+      def output_multi_column(files)
+        results = files.map { |file| file.to_s.ljust(24, ' ') }
+        file_names = results.each_slice(length(files)).to_a
+        push_nil(file_names).transpose.each { |array| puts array.join('') }
+      end
 
-    private
+      private
 
-    def length(files)
-      (files.length % 4).zero? ? files.length / 4 : files.length / 4 + 1
-    end
+      def length(files)
+        (files.length % 4).zero? ? files.length / 4 : files.length / 4 + 1
+      end
 
-    def push_nil(format)
-      max = format.max_by(&:length).length
-      format.each { |array| array[max - 1] = nil if array.length < max }
+      def push_nil(format)
+        max = format.max_by(&:length).length
+        format.each { |array| array[max - 1] = nil if array.length < max }
+      end
     end
   end
 
