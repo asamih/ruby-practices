@@ -55,33 +55,33 @@ module Wc
     end
 
     def normal(files)
-      result = []
+      results = []
       if files.length >= 4
         number = 0
         files.each do |file_name|
           number += 1
-          result << (number % 4 != 0 ? rayout(file_name) : " #{file_name}\n")
+          results << (number % 4 != 0 ? rayout(file_name) : " #{file_name}\n")
         end
       else
-        files.map { |file_name| result << rayout(file_name) }
+        files.map { |file_name| results << rayout(file_name) }
       end
-      puts result.join('')
+      puts results.join('')
       puts "#{total(file.data)} total" if files.length > 4
     end
 
     def line(files)
-      result = []
+      results = []
       if files.length >= 4
         number = 0
         files.each do |file_name|
           number += 1
-          result << rayout(file_name) if number == 1 || ((number - 1) % 4).zero?
-          result << " #{file_name}\n" if (number % 4).zero?
+          results << rayout(file_name) if number == 1 || ((number - 1) % 4).zero?
+          results << " #{file_name}\n" if (number % 4).zero?
         end
       else
-        result << rayout(files.first)
+        results << rayout(files.first)
       end
-      puts result.join('')
+      puts results.join('')
       puts "#{total_line(file.data)} total" if files.length > 4
     end
 
