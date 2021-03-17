@@ -64,7 +64,7 @@ module Wc
         files.map { |file_name| results << rayout(file_name) }
       end
       puts results.join('')
-      puts "#{total(file.data)} total" if files.length > 4
+      puts "#{total(file.file_data)} total" if files.length > 4
     end
 
     def output_line(files)
