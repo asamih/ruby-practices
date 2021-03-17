@@ -5,7 +5,7 @@ require 'etc'
 
 module Ls
   class Command
-    attr_reader :options, :files
+    attr_reader :options
 
     def initialize
       @options = {}
