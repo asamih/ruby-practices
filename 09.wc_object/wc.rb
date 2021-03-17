@@ -80,7 +80,7 @@ module Wc
         results << rayout(files.first)
       end
       puts results.join('')
-      puts "#{total_line(file.data)} total" if files.length > 4
+      puts "#{total_line(file.file_data)} total" if files.length > 4
     end
 
     private
