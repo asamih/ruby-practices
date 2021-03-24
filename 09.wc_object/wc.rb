@@ -56,12 +56,12 @@ module Wc
       results = []
       if files.length >= 4
         number = 0
-        files.each do |file_name|
+        files.each do |file_data|
           number += 1
-          results << (number % 4 != 0 ? rayout(file_name) : " #{file_name}\n")
+          results << (number % 4 != 0 ? rayout(file_data) : " #{file_data}\n")
         end
       else
-        files.map { |file_name| results << rayout(file_name) }
+        files.map { |file_data| results << rayout(file_data) }
       end
       puts results.join('')
       puts "#{total(file.file_details)} total" if files.length > 4
@@ -71,10 +71,10 @@ module Wc
       results = []
       if files.length >= 4
         number = 0
-        files.each do |file_name|
+        files.each do |file_data|
           number += 1
-          results << rayout(file_name) if number == 1 || ((number - 1) % 4).zero?
-          results << " #{file_name}\n" if (number % 4).zero?
+          results << rayout(file_data) if number == 1 || ((number - 1) % 4).zero?
+          results << " #{file_data}\n" if (number % 4).zero?
         end
       else
         results << rayout(files.first)
@@ -85,8 +85,8 @@ module Wc
 
     private
 
-    def rayout(file_name)
-      file_name.to_s.rjust(8, ' ')
+    def rayout(file_data)
+      file_data.to_s.rjust(8, ' ')
     end
 
     def total(files)
