@@ -16,80 +16,82 @@ module Wc
 
     def excute
       if options[:l]
-        Wc::Formatter.new.output_line(@files)
+        Wc::Formatter.output_line(@files)
       else
-        Wc::Formatter.new.output_normal(@files)
+        Wc::Formatter.output_normal(@files)
       end
     end
   end
 
   class Formatter
-    def output_normal(files)
-      file_elements = file_details(files).flatten!
-      results = []
-      if file_elements.length >= 4
-        number = 0
-        results = file_elements.map do |file_data|
-          number += 1
-          number % 4 != 0 ? rayout(file_data) : " #{file_data}\n"
+    class << self
+      def output_normal(files)
+        file_elements = file_details(files).flatten!
+        results = []
+        if file_elements.length >= 4
+          number = 0
+          results = file_elements.map do |file_data|
+            number += 1
+            number % 4 != 0 ? rayout(file_data) : " #{file_data}\n"
+          end
+        else
+          results = file_elements.map { |file_data| rayout(file_data) }
         end
-      else
-        results = file_elements.map { |file_data| rayout(file_data) }
+        puts results.join('')
+        puts "#{total(file_details(files))} total" if file_elements.length > 4
       end
-      puts results.join('')
-      puts "#{total(file_details(files))} total" if file_elements.length > 4
-    end
 
-    def output_line(files)
-      file_elements = file_details(files).flatten!
-      results = []
-      if file_elements.length >= 4
-        number = 0
-        file_elements.each do |file_data|
-          number += 1
-          results << rayout(file_data) if number == 1 || ((number - 1) % 4).zero?
-          results << " #{file_data}\n" if (number % 4).zero?
+      def output_line(files)
+        file_elements = file_details(files).flatten!
+        results = []
+        if file_elements.length >= 4
+          number = 0
+          file_elements.each do |file_data|
+            number += 1
+            results << rayout(file_data) if number == 1 || ((number - 1) % 4).zero?
+            results << " #{file_data}\n" if (number % 4).zero?
+          end
+        else
+          results << rayout(file_elements.first)
         end
-      else
-        results << rayout(file_elements.first)
+        puts results.join('')
+        puts "#{total_line(file_details(files))} total" if file_elements.length > 4
       end
-      puts results.join('')
-      puts "#{total_line(file_details(files))} total" if file_elements.length > 4
-    end
 
-    private
+      private
 
-    def file_details(files)
-      file_details = []
-      if files.empty?
-        file_unit = $stdin.read
-        file_details.push count(file_unit)
-      else
-        files.each do |file_name|
-          ::File.open(file_name, 'r') { |file| file_unit = file.read }
-          file_details.push(count(file_unit) << file_name)
+      def file_details(files)
+        file_details = []
+        if files.empty?
+          file_unit = $stdin.read
+          file_details.push count(file_unit)
+        else
+          files.each do |file_name|
+            ::File.open(file_name, 'r') { |file| file_unit = file.read }
+            file_details.push(count(file_unit) << file_name)
+          end
         end
+        file_details
       end
-      file_details
-    end
 
-    def count(file_unit)
-      @line = file_unit.lines.count,
-              @word = file_unit.chomp.split.count,
-              @byte = file_unit.bytesize
-    end
+      def count(file_unit)
+        @line = file_unit.lines.count,
+                @word = file_unit.chomp.split.count,
+                @byte = file_unit.bytesize
+      end
 
-    def rayout(file_data)
-      file_data.to_s.rjust(8, ' ')
-    end
+      def rayout(file_data)
+        file_data.to_s.rjust(8, ' ')
+      end
 
-    def total(file_details)
-      total = file_details.map { |array| array[0..2] }.transpose.map { |file_subtotal| file_subtotal.inject(:+) }
-      total.map { |file_total| rayout(file_total) }.join('')
-    end
+      def total(file_details)
+        total = file_details.map { |array| array[0..2] }.transpose.map { |file_subtotal| file_subtotal.inject(:+) }
+        total.map { |file_total| rayout(file_total) }.join('')
+      end
 
-    def total_line(file_details)
-      rayout(file_details.map { |file_subtotal| file_subtotal[0] }.sum)
+      def total_line(file_details)
+        rayout(file_details.map { |file_subtotal| file_subtotal[0] }.sum)
+      end
     end
   end
 end
