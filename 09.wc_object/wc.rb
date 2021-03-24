@@ -89,8 +89,8 @@ module Wc
       file_data.to_s.rjust(8, ' ')
     end
 
-    def total(files)
-      total = files.map { |array| array[0..2] }.transpose.map { |file_data| file_data.inject(:+) }
+    def total(file_details)
+      total = file_details.map { |array| array[0..2] }.transpose.map { |file_subtotal| file_subtotal.inject(:+) }
       total.map { |file_total| rayout(file_total) }.join('')
     end
 
