@@ -56,9 +56,9 @@ module Wc
       results = []
       if files.length >= 4
         number = 0
-        files.each do |file_data|
+        results = files.map do |file_data|
           number += 1
-          results << (number % 4 != 0 ? rayout(file_data) : " #{file_data}\n")
+          number % 4 != 0 ? rayout(file_data) : " #{file_data}\n"
         end
       else
         files.map { |file_data| results << rayout(file_data) }
