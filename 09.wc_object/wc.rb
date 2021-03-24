@@ -94,8 +94,8 @@ module Wc
       total.map { |file_total| rayout(file_total) }.join('')
     end
 
-    def total_line(files)
-      rayout(files.map { |file_data| file_data[0] }.sum)
+    def total_line(file_details)
+      rayout(file_details.map { |file_subtotal| file_subtotal[0] }.sum)
     end
   end
 end
