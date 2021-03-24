@@ -14,25 +14,25 @@ module Wc
       @files = ARGV
     end
 
-    def file_data
-      file_data = []
+    def file_details
+      file_details = []
       if @files.empty?
         file_unit = $stdin.read
-        file_data.push count(file_unit)
+        file_details.push count(file_unit)
       else
         @files.each do |file_name|
           ::File.open(file_name, 'r') { |file| file_unit = file.read }
-          file_data.push(count(file_unit) << file_name)
+          file_details.push(count(file_unit) << file_name)
         end
       end
-      file_data
+      file_details
     end
 
     def excute
       if options[:l]
-        Wc::Formatter.new.output_line(file_data.flatten!)
+        Wc::Formatter.new.output_line(file_details.flatten!)
       else
-        Wc::Formatter.new.output_normal(file_data.flatten!)
+        Wc::Formatter.new.output_normal(file_details.flatten!)
       end
     end
 
@@ -64,7 +64,7 @@ module Wc
         files.map { |file_name| results << rayout(file_name) }
       end
       puts results.join('')
-      puts "#{total(file.file_data)} total" if files.length > 4
+      puts "#{total(file.file_details)} total" if files.length > 4
     end
 
     def output_line(files)
@@ -80,7 +80,7 @@ module Wc
         results << rayout(files.first)
       end
       puts results.join('')
-      puts "#{total_line(file.file_data)} total" if files.length > 4
+      puts "#{total_line(file.file_details)} total" if files.length > 4
     end
 
     private
