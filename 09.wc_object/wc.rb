@@ -61,7 +61,7 @@ module Wc
           number % 4 != 0 ? rayout(file_data) : " #{file_data}\n"
         end
       else
-        files.map { |file_data| results << rayout(file_data) }
+        results = files.map { |file_data| rayout(file_data) }
       end
       puts results.join('')
       puts "#{total(file.file_details)} total" if files.length > 4
