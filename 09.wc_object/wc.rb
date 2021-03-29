@@ -35,7 +35,7 @@ module Wc
             number % 4 != 0 ? layout(file_data) : " #{file_data}\n"
           end
         else
-          results = file_elements.map { |file_data| ayout(file_data) }
+          results = file_elements.map { |file_data| layout(file_data) }
         end
         puts results.join('')
         puts "#{total(file_details)} total" if file_elements.length > 4
