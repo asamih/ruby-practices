@@ -11,22 +11,22 @@ module Wc
       option = OptionParser.new
       option.on('-l', '--lines') { |value| @options[:l] = value }
       option.parse!(ARGV)
-      @files = ARGV
+      @file_details = Wc::FileCollector.new.file_details
+      @file_elements = @file_details.flatten
     end
 
     def excute
       if options[:l]
-        Wc::Formatter.output_line(@files)
+        Wc::Formatter.output_line(@file_details, @file_elements)
       else
-        Wc::Formatter.output_normal(@files)
+        Wc::Formatter.output_normal(@file_details, @file_elements)
       end
     end
   end
 
   class Formatter
     class << self
-      def output_normal(files)
-        file_elements = file_details(files).flatten!
+      def output_normal(file_details, file_elements)
         results = []
         if file_elements.length >= 4
           number = 0
@@ -35,14 +35,13 @@ module Wc
             number % 4 != 0 ? layout(file_data) : " #{file_data}\n"
           end
         else
-          results = file_elements.map { |file_data| layout(file_data) }
+          results = file_elements.map { |file_data| ayout(file_data) }
         end
         puts results.join('')
-        puts "#{total(file_details(files))} total" if file_elements.length > 4
+        puts "#{total(file_details)} total" if file_elements.length > 4
       end
 
-      def output_line(files)
-        file_elements = file_details(files).flatten!
+      def output_line(file_details, file_elements)
         results = []
         if file_elements.length >= 4
           number = 0
@@ -55,30 +54,10 @@ module Wc
           results << layout(file_elements.first)
         end
         puts results.join('')
-        puts "#{total_line(file_details(files))} total" if file_elements.length > 4
+        puts "#{total_line(file_details)} total" if file_elements.length > 4
       end
 
       private
-
-      def file_details(files)
-        file_details = []
-        if files.empty?
-          file_unit = $stdin.read
-          file_details.push count(file_unit)
-        else
-          files.each do |file_name|
-            ::File.open(file_name, 'r') { |file| file_unit = file.read }
-            file_details.push(count(file_unit) << file_name)
-          end
-        end
-        file_details
-      end
-
-      def count(file_unit)
-        @line = file_unit.lines.count,
-                @word = file_unit.chomp.split.count,
-                @byte = file_unit.bytesize
-      end
 
       def layout(file_data)
         file_data.to_s.rjust(8, ' ')
@@ -92,6 +71,32 @@ module Wc
       def total_line(file_details)
         layout(file_details.map { |file_subtotal| file_subtotal[0] }.sum)
       end
+    end
+  end
+
+  class FileCollector
+    def initialize
+      @files = ARGV
+    end
+
+    def file_details
+      file_details = []
+      if @files.empty?
+        file_unit = $stdin.read
+        file_details.push count(file_unit)
+      else
+        @files.each do |file_name|
+          ::File.open(file_name, 'r') { |file| file_unit = file.read }
+          file_details.push(count(file_unit) << file_name)
+        end
+      end
+      file_details
+    end
+
+    def count(file_unit)
+      @line = file_unit.lines.count,
+              @word = file_unit.chomp.split.count,
+              @byte = file_unit.bytesize
     end
   end
 end
