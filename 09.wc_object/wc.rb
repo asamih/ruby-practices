@@ -17,16 +17,16 @@ module Wc
 
     def excute
       if options[:l]
-        Wc::Formatter.output_line(@file_details, @file_elements)
+        Wc::LineFormatter.output_line(@file_details, @file_elements)
       else
-        Wc::Formatter.output_normal(@file_details, @file_elements)
+        Wc::StandardFormatter.output_all(@file_details, @file_elements)
       end
     end
   end
 
-  class Formatter
+  class StandardFormatter
     class << self
-      def output_normal(file_details, file_elements)
+      def output_all(file_details, file_elements)
         results = []
         if file_elements.length >= 4
           number = 0
@@ -41,6 +41,21 @@ module Wc
         puts "#{total(file_details)} total" if file_elements.length > 4
       end
 
+      private
+
+      def layout(file_data)
+        file_data.to_s.rjust(8, ' ')
+      end
+
+      def total(file_details)
+        total = file_details.map { |array| array[0..2] }.transpose.map { |file_subtotal| file_subtotal.inject(:+) }
+        total.map { |file_total| layout(file_total) }.join('')
+      end
+    end
+  end
+
+  class LineFormatter
+    class << self
       def output_line(file_details, file_elements)
         results = []
         if file_elements.length >= 4
@@ -61,11 +76,6 @@ module Wc
 
       def layout(file_data)
         file_data.to_s.rjust(8, ' ')
-      end
-
-      def total(file_details)
-        total = file_details.map { |array| array[0..2] }.transpose.map { |file_subtotal| file_subtotal.inject(:+) }
-        total.map { |file_total| layout(file_total) }.join('')
       end
 
       def total_line(file_details)
